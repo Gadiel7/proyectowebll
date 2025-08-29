@@ -1,0 +1,88 @@
+.pedido-list {
+    display: grid;
+    gap: 20px;
+  }
+  
+  .pedido-card {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-left: 6px solid #ff4d4f;
+    border-radius: 8px;
+    padding: 16px 20px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    transition: 0.3s;
+  }
+  
+  .pedido-card:hover {
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  }
+  
+  .pedido-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .estado {
+    padding: 4px 10px;
+    border-radius: 5px;
+    font-size: 0.9em;
+    font-weight: bold;
+  }
+  
+  .estado.pendiente {
+    background-color: #ffe58f;
+    color: #ad6800;
+  }
+  
+  .estado.listo {
+    background-color: #d9f7be;
+    color: #389e0d;
+  }
+  
+  .pedido-items {
+    margin: 12px 0;
+    list-style: none;
+    padding: 0;
+  }
+  
+  .pedido-items li {
+    margin-bottom: 5px;
+  }
+  
+  .pedido-actions {
+    display: flex;
+    gap: 10px;
+  }
+  
+  .btn {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9em;
+  }
+  
+  .btn-listo {
+    background-color: #52c41a;
+    color: white;
+  }
+  
+  .btn-eliminar {
+    background-color: #ff4d4f;
+    color: white;
+  }
+  
+  .no-pedidos {
+    font-size: 1.1em;
+    color: #888;
+  }
+  /* ... (mantén los estilos que ya tenías) ... */
+
+.pedido-card.pendiente {
+    border-left: 6px solid #ff4d4f; /* Rojo para pendiente */
+  }
+  
+  .pedido-card.listo {
+    border-left: 6px solid #52c41a; /* Verde para listo */
+  }
