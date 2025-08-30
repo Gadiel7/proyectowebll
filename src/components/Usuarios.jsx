@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useAppContext } from "../context/AppContext";
 import "./Usuarios.css";
 
-const initialFormState = { id: null, nombre: "", correo: "", rol: "Cliente" };
+const initialFormState = { nombre: "", correo: "", rol: "Cliente" };
 
 export default function Usuarios() {
   const { usuarios, saveUsuario, deleteUsuario } = useAppContext();
@@ -10,11 +10,13 @@ export default function Usuarios() {
   const [currentUser, setCurrentUser] = useState(initialFormState);
 
   const handleEdit = (usuario) => {
+    // Cuando editamos, el objeto usuario ya viene con _id
     setCurrentUser(usuario);
     setIsFormVisible(true);
   };
 
   const handleAddNew = () => {
+    // Al añadir, reseteamos el formulario. No tendrá _id.
     setCurrentUser(initialFormState);
     setIsFormVisible(true);
   };
@@ -46,7 +48,7 @@ export default function Usuarios() {
       {isFormVisible && (
         <div className="form-modal">
           <form onSubmit={handleSave} className="usuario-form">
-            <h3>{currentUser.id ? "Editar Usuario" : "Nuevo Usuario"}</h3>
+            <h3>{currentUser._id ? "Editar Usuario" : "Nuevo Usuario"}</h3>
             <input
               type="text"
               name="nombre"
@@ -86,13 +88,13 @@ export default function Usuarios() {
         </thead>
         <tbody>
           {usuarios.map((usuario) => (
-            <tr key={usuario.id}>
-              <td>{usuario.nombre}</td>
-              <td>{usuario.correo}</td>
-              <td>{usuario.rol}</td>
-              <td>
+            <tr key={usuario._id}>
+              <td data-label="Nombre">{usuario.nombre}</td>
+              <td data-label="Correo">{usuario.correo}</td>
+              <td data-label="Rol">{usuario.rol}</td>
+              <td data-label="Acciones">
                 <button className="btn editar" onClick={() => handleEdit(usuario)}>✏️ Editar</button>
-                <button className="btn eliminar" onClick={() => handleDelete(usuario.id)}>🗑️ Eliminar</button>
+                <button className="btn eliminar" onClick={() => handleDelete(usuario._id)}>🗑️ Eliminar</button>
               </td>
             </tr>
           ))}
