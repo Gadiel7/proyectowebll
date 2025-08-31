@@ -9,6 +9,8 @@ export function useAppContext() {
   return useContext(AppContext);
 }
 
+// La línea "const API_URL = ..." ha sido eliminada de aquí.
+
 export function AppProvider({ children }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState(null);
@@ -20,14 +22,12 @@ export function AppProvider({ children }) {
   const [usuarios, setUsuarios] = useState([]);
   const [productos, setProductos] = useState([]);
 
-  // Función para recargar solo los datos del dashboard
   const fetchDashboardData = async () => {
     try {
       const data = await apiFetch('/stats/summary');
       setDashboardData(data);
     } catch (error) {
       console.error("Error recargando los datos del dashboard:", error);
-      // No mostramos un toast aquí para no ser molestos en cada acción
     }
   };
 
@@ -54,7 +54,6 @@ export function AppProvider({ children }) {
       const fetchAllData = async () => {
         setIsInitialLoading(true);
         try {
-          // Cargamos todos los datos en paralelo para mejorar el rendimiento
           const [summaryData, pedidosData, usuariosData, productosData] = await Promise.all([
             apiFetch('/stats/summary'),
             apiFetch('/pedidos'),
@@ -111,7 +110,7 @@ export function AppProvider({ children }) {
       });
       setPedidos(prev => prev.map(p => (p._id === id ? pedidoActualizado : p)));
       toast.success('¡Estado del pedido actualizado!');
-      await fetchDashboardData(); // Recargar dashboard
+      await fetchDashboardData();
     } catch (error) {
       toast.error(error.message);
     } finally {
@@ -125,7 +124,7 @@ export function AppProvider({ children }) {
       await apiFetch(`/pedidos/${id}`, { method: 'DELETE' });
       setPedidos(prev => prev.filter(p => p._id !== id));
       toast.success('¡Pedido eliminado correctamente!');
-      await fetchDashboardData(); // Recargar dashboard
+      await fetchDashboardData();
     } catch (error) {
       toast.error(error.message);
     } finally {
@@ -152,7 +151,7 @@ export function AppProvider({ children }) {
         setUsuarios(prev => [...prev, savedUsuario]);
         toast.success('¡Usuario creado!');
       }
-      await fetchDashboardData(); // Recargar por si cambia el número de clientes
+      await fetchDashboardData();
     } catch (error) {
       toast.error(error.message);
     } finally {
@@ -166,7 +165,7 @@ export function AppProvider({ children }) {
       await apiFetch(`/usuarios/${id}`, { method: 'DELETE' });
       setUsuarios(prev => prev.filter(u => u._id !== id));
       toast.success('¡Usuario eliminado!');
-      await fetchDashboardData(); // Recargar por si cambia el número de clientes
+      await fetchDashboardData();
     } catch (error) {
       toast.error(error.message);
     } finally {
@@ -193,7 +192,7 @@ export function AppProvider({ children }) {
         setProductos(prev => [...prev, savedProducto]);
         toast.success('¡Producto creado!');
       }
-      await fetchDashboardData(); // Recargar por si cambia el número de productos
+      await fetchDashboardData();
     } catch (error) {
       toast.error(error.message);
     } finally {
@@ -207,7 +206,7 @@ export function AppProvider({ children }) {
       await apiFetch(`/productos/${id}`, { method: 'DELETE' });
       setProductos(prev => prev.filter(p => p._id !== id));
       toast.success('¡Producto eliminado!');
-      await fetchDashboardData(); // Recargar por si cambia el número de productos
+      await fetchDashboardData();
     } catch (error) {
       toast.error(error.message);
     } finally {
