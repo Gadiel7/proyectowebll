@@ -1,10 +1,8 @@
-// src/components/Register.jsx
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
+import apiFetch from '../utils/api'; // Importa la función de ayuda que conoce la URL correcta
 import './Login.css'; // Reutilizaremos los estilos del Login
-
-const API_URL = 'http://localhost:5000/api';
 
 export default function Register() {
   const [formData, setFormData] = useState({
@@ -26,19 +24,11 @@ export default function Register() {
     e.preventDefault();
     setIsLoading(true);
     try {
-      const response = await fetch(`${API_URL}/auth/register`, {
+      // Ahora usamos apiFetch, que automáticamente usa la URL de Vercel/Railway
+      await apiFetch('/auth/register', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ ...formData, rol: 'Cliente' }), // Siempre se registran como 'Cliente'
+        body: JSON.stringify({ ...formData, rol: 'Cliente' }),
       });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || 'Error en el registro');
-      }
 
       toast.success('¡Registro exitoso! Ahora puedes iniciar sesión.');
       navigate('/login');
