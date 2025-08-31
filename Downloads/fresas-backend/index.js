@@ -13,33 +13,11 @@ const statsRoutes = require('./routes/stats');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// --- CONFIGURACIÓN DE CORS MEJORADA ---
-// Lista de dominios permitidos (los que pueden hablar con nuestra API)
-const whitelist = [
-    'https://proyectowebll.vercel.app', // URL principal de producción
-    // Expresión regular para permitir CUALQUIER subdominio de Vercel
-    // Esto cubrirá la URL de previsualización que me pasaste y futuras previsualizaciones.
-    new RegExp(`^https:\/\/proyectowebll-.*-gadielfox123-gmailcoms-projects\.vercel\.app$`)
-];
-
-const corsOptions = {
-    origin: function (origin, callback) {
-        // Permitir peticiones sin 'origin' (como las de apps móviles o Postman/Thunder Client)
-        if (!origin) return callback(null, true);
-
-        // Si el origen de la petición está en nuestra lista blanca, permitirlo
-        if (whitelist.some(url => url instanceof RegExp ? url.test(origin) : url === origin)) {
-            callback(null, true);
-        } else {
-            // Si no está en la lista, rechazarlo
-            callback(new Error('No permitido por CORS'));
-        }
-    },
-    optionsSuccessStatus: 200
-};
-
-app.use(cors(corsOptions));
-// -----------------------------------------
+// --- CONFIGURACIÓN DE CORS SIMPLIFICADA PARA DEPURACIÓN ---
+// Esta configuración permite peticiones desde cualquier origen.
+// Es la forma más fácil de descartar problemas de CORS.
+app.use(cors());
+// --------------------------------------------------------
 
 app.use(express.json());
 
