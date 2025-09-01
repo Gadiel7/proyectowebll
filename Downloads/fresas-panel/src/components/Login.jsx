@@ -8,23 +8,17 @@ export default function Login() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  
   const { login } = useAppContext();
-  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     setIsLoading(true);
-
     const success = await login(correo, password);
-    
     setIsLoading(false);
-
     if (!success) {
       setError('Credenciales inválidas. Por favor, inténtalo de nuevo.');
     }
-    // La redirección se maneja automáticamente en App.jsx cuando el estado `isAuthenticated` cambia.
   };
 
   return (
@@ -34,25 +28,17 @@ export default function Login() {
           <h2>Panel de Administración</h2>
           <p>Fresas con Crema</p>
           <div className="input-group">
-            <input
-              type="email"
-              id="correo"
-              value={correo}
-              onChange={(e) => setCorreo(e.target.value)}
-              required
-              placeholder="Correo electrónico"
-            />
+            <input type="email" id="correo" value={correo} onChange={(e) => setCorreo(e.target.value)} required placeholder="Correo electrónico" />
           </div>
           <div className="input-group">
-            <input
-              type="password"
-              id="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              placeholder="Contraseña"
-            />
+            <input type="password" id="password" value={password} onChange={(e) => setPassword(e.target.value)} required placeholder="Contraseña" />
           </div>
+
+          {/* --- ENLACE AÑADIDO --- */}
+          <div className="forgot-password-link">
+            <Link to="/forgot-password">¿Olvidaste tu contraseña?</Link>
+          </div>
+          
           {error && !isLoading && <p className="error-message">{error}</p>}
           <button type="submit" className="login-button" disabled={isLoading}>
             {isLoading ? 'Ingresando...' : 'Ingresar'}

@@ -3,7 +3,8 @@ import { useAppContext } from "../context/AppContext";
 import confirmAlert from "../utils/confirmAlert";
 import "./Usuarios.css";
 
-const initialFormState = { nombre: "", correo: "", rol: "Cliente" };
+// Añadimos el campo de contraseña al estado inicial del formulario
+const initialFormState = { nombre: "", correo: "", rol: "Cliente", password: "" };
 
 export default function Usuarios() {
   const { usuarios, saveUsuario, deleteUsuario, isSubmitting } = useAppContext();
@@ -11,7 +12,9 @@ export default function Usuarios() {
   const [currentUser, setCurrentUser] = useState(initialFormState);
 
   const handleEdit = (usuario) => {
-    setCurrentUser(usuario);
+    // Cuando editamos, no cargamos la contraseña existente por seguridad.
+    // El campo de contraseña empieza vacío para permitir un cambio opcional.
+    setCurrentUser({ ...usuario, password: "" });
     setIsFormVisible(true);
   };
 
@@ -21,11 +24,7 @@ export default function Usuarios() {
   };
 
   const handleDelete = async (id, nombre) => {
-    const result = await confirmAlert(
-      '¿Estás seguro?', 
-      `¡No podrás revertir la eliminación de ${nombre}!`
-    );
-
+    const result = await confirmAlert('¿Estás seguro?', `¡No podrás revertir la eliminación de ${nombre}!`);
     if (result.isConfirmed) {
       deleteUsuario(id);
     }
@@ -33,7 +32,17 @@ export default function Usuarios() {
 
   const handleSave = (e) => {
     e.preventDefault();
-    saveUsuario(currentUser).then(() => {
+    // Creamos una copia del usuario que vamos a guardar
+    const userToSave = { ...currentUser };
+
+    // Lógica clave: si estamos editando (hay un _id) y el campo de contraseña
+    // está vacío, lo eliminamos del objeto para que el backend no lo actualice.
+    if (userToSave._id && userToSave.password === "") {
+        delete userToSave.password;
+    }
+
+    saveUsuario(userToSave).then(() => {
+        // Cerramos el formulario solo después de que la operación de guardado termine.
         setIsFormVisible(false);
     });
   };
@@ -54,8 +63,35 @@ export default function Usuarios() {
         <div className="form-modal">
           <form onSubmit={handleSave} className="usuario-form">
             <h3>{currentUser._id ? "Editar Usuario" : "Nuevo Usuario"}</h3>
-            <input type="text" name="nombre" value={currentUser.nombre} onChange={handleChange} placeholder="Nombre completo" required />
-            <input type="email" name="correo" value={currentUser.correo} onChange={handleChange} placeholder="Correo electrónico" required />
+            <input 
+              type="text" 
+              name="nombre" 
+              value={currentUser.nombre} 
+              onChange={handleChange} 
+              placeholder="Nombre completo" 
+              required 
+            />
+            <input 
+              type="email" 
+              name="correo" 
+              value={currentUser.correo} 
+              onChange={handleChange} 
+              placeholder="Correo electrónico" 
+              required 
+            />
+            
+            {/* --- CAMPO DE CONTRASEÑA NUEVO Y MEJORADO --- */}
+            <input 
+              type="password" 
+              name="password" 
+              value={currentUser.password} 
+              onChange={handleChange} 
+              placeholder={currentUser._id ? "Nueva contraseña (opcional)" : "Contraseña"}
+              // La contraseña solo es un campo requerido si estamos creando un usuario nuevo
+              required={!currentUser._id} 
+              minLength="6"
+            />
+
             <select name="rol" value={currentUser.rol} onChange={handleChange}>
               <option value="Cliente">Cliente</option>
               <option value="Administrador">Administrador</option>
