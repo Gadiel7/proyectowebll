@@ -8,10 +8,9 @@ const API_BASE_URL = import.meta.env.VITE_API_URL.replace('/api', '');
 
 const productosData = {
     tamanos: [
-        // --- RUTAS DE IMAGEN CORREGIDAS ---
         { id: 'vaso-pequeno', nombre: 'Pequeño (12 oz)', valor: 'pequeno', precio: 10.00, imagen: '/images/foto1.jpg' },
-        { id: 'vaso-mediano', nombre: 'Mediano (16 oz)', valor: 'mediano', precio: 18.00, imagen: '/images/foto3.jpg' },
-        { id: 'vaso-grande', nombre: 'Grande (20 oz)', valor: 'grande', precio: 25.00, imagen: '/images/foto2.jpg' }
+        { id: 'vaso-mediano', nombre: 'Mediano (16 oz)', valor: 'mediano', precio: 18.00, imagen: '/images/foto2.jpg' },
+        { id: 'vaso-grande', nombre: 'Grande (20 oz)', valor: 'grande', precio: 25.00, imagen: '/images/foto3.jpg' }
     ],
     cremas: [
         { nombre: 'Crema Batida Clásica', valor: 'crema-batida', precio: 0.00 },
@@ -164,13 +163,13 @@ export default function ClientePedido() {
                     <div className="sidebar-ad-box">
                         <h4>¡Oferta Especial!</h4>
                         {/* --- RUTA DE IMAGEN CORREGIDA --- */}
-                        <img src="/images/post.png" alt="Publicidad de Batido de Fresa" />
+                        <img src="/images/post.jpg" alt="Publicidad de Batido de Fresa" />
                         <p>Prueba nuestro nuevo batido de fresa y vainilla. ¡Refrescante y delicioso!</p>
                         <a href="#" className="btn btn-sidebar">Ver más</a>
                     </div>
                     <div className="sidebar-photo-box">
                         {/* --- RUTA DE IMAGEN CORREGIDA --- */}
-                        <img src="/images/oferta.png" alt="Foto decorativa de fresas" />
+                        <img src="/images/decorativa.jpg" alt="Foto decorativa de fresas" />
                     </div>
                 </aside>
             </div>
