@@ -28,7 +28,7 @@ export default function ForgotPassword() {
   };
 
   return (
-    <div className="auth-container"> {/* <-- CAMBIO AQUÍ */}
+    <div className="auth-container">
       <div className="login-form-wrapper">
         <form onSubmit={handleSubmit} className="login-form">
           <h2>Recuperar Contraseña</h2>
@@ -47,4 +47,4 @@ export default function ForgotPassword() {
       </div>
     </div>
   );
-}}
+} // <-- EL ARCHIVO DEBE TERMINAR AQUÍ
