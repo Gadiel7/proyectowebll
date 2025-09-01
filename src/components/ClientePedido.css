@@ -256,3 +256,30 @@
 .notification-banner button:hover {
   opacity: 1;
 }
+.cliente-pedido-page .opcion-item .img-container {
+  width: 100%;
+  aspect-ratio: 1 / 1; /* Esto hace que el contenedor sea siempre un cuadrado perfecto */
+  background-color: #fdfdfd;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  padding: 5px;
+  box-sizing: border-box;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.cliente-pedido-page .opcion-item img {
+  max-width: 90%; /* La imagen nunca será más ancha que el 90% de su contenedor */
+  max-height: 90%; /* La imagen nunca será más alta que el 90% de su contenedor */
+  object-fit: contain; /* Asegura que toda la imagen sea visible sin deformarse */
+}
+
+/* --- ESTILOS PARA LA BARRA LATERAL DERECHA (ASIDE) --- */
+.cliente-pedido-page .sidebar img {
+  width: 100%; /* Asegura que las imágenes de la publicidad llenen su contenedor */
+  border-radius: 10px;
+  display: block;
+}

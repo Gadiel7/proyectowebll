@@ -116,7 +116,9 @@ export default function ClientePedido() {
                                     <label htmlFor={item.id} className="opcion-item" key={item.id}>
                                         <input type="radio" id={item.id} name="tamano-vaso" value={item.valor} checked={tamano.valor === item.valor} onChange={() => setTamano(item)} />
                                         <span>{item.nombre}</span>
-                                        <div className="img-container"><img src={item.imagen} alt={item.nombre} /></div>
+                                        <div className="img-container">
+                                            <img src={item.imagen} alt={item.nombre} />
+                                        </div>
                                     </label>
                                 ))}
                             </div>
@@ -138,7 +140,9 @@ export default function ClientePedido() {
                                     <label htmlFor={item.id} className="opcion-item" key={item.id}>
                                         <input type="checkbox" id={item.id} name="fruta" value={item.valor} checked={frutasSeleccionadas.some(f => f.valor === item.valor)} onChange={() => handleCheckboxChange(item, frutasSeleccionadas, setFrutasSeleccionadas)} />
                                         <span>{item.nombre}</span>
-                                        <div className="img-container"><img src={item.imagen} alt={item.nombre} /></div>
+                                        <div className="img-container">
+                                            <img src={item.imagen} alt={item.nombre} />
+                                        </div>
                                     </label>
                                 ))}
                             </div>
@@ -151,7 +155,9 @@ export default function ClientePedido() {
                                     <label htmlFor={item.id} className="opcion-item" key={item.id}>
                                         <input type="checkbox" id={item.id} name="topping" value={item.valor} checked={toppingsSeleccionados.some(t => t.valor === item.valor)} onChange={() => handleCheckboxChange(item, toppingsSeleccionados, setToppingsSeleccionados)} />
                                         <span>{item.nombre}</span>
-                                        <div className="img-container"><img src={item.imagen} alt={item.nombre} /></div>
+                                        <div className="img-container">
+                                            <img src={item.imagen} alt={item.nombre} />
+                                        </div>
                                     </label>
                                 ))}
                             </div>
@@ -162,13 +168,11 @@ export default function ClientePedido() {
                 <aside className="sidebar">
                     <div className="sidebar-ad-box">
                         <h4>¡Oferta Especial!</h4>
-                        {/* --- RUTA DE IMAGEN CORREGIDA --- */}
                         <img src="/images/post.jpg" alt="Publicidad de Batido de Fresa" />
                         <p>Prueba nuestro nuevo batido de fresa y vainilla. ¡Refrescante y delicioso!</p>
                         <a href="#" className="btn btn-sidebar">Ver más</a>
                     </div>
                     <div className="sidebar-photo-box">
-                        {/* --- RUTA DE IMAGEN CORREGIDA --- */}
                         <img src="/images/decorativa.jpg" alt="Foto decorativa de fresas" />
                     </div>
                 </aside>
