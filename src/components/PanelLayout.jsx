@@ -9,9 +9,8 @@ export default function PanelLayout() {
   const { user, isInitialLoading } = useAppContext();
   const [isSidebarOpen, setSidebarOpen] = useState(false);
 
-  // --- LÍNEA DE DEPURACIÓN AÑADIDA ---
-  // Esto se mostrará en la consola del navegador cuando entres al panel.
-  console.log("Datos del usuario en PanelLayout:", user);
+  // Lógica mejorada para obtener el nombre de usuario de forma segura
+  const userName = user?.nombre || localStorage.getItem('userName') || 'Admin';
 
   const toggleSidebar = () => {
     setSidebarOpen(!isSidebarOpen);
@@ -36,7 +35,7 @@ export default function PanelLayout() {
     <div className="app">
       <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
       <div className="main-content">
-        <Header usuario={user?.nombre || 'Admin'} toggleSidebar={toggleSidebar} />
+        <Header usuario={userName} toggleSidebar={toggleSidebar} />
         <section className="content-section">
           {isInitialLoading ? (
             <div className="loader-container">

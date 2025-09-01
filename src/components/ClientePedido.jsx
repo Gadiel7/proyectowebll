@@ -37,21 +37,18 @@ export default function ClientePedido() {
     const [frutasSeleccionadas, setFrutasSeleccionadas] = useState([]);
     const [toppingsSeleccionados, setToppingsSeleccionados] = useState([]);
     const [precioTotal, setPrecioTotal] = useState(0.00);
+    const [notification, setNotification] = useState(null);
 
     useEffect(() => {
         const socket = io(API_BASE_URL);
-        
+
         if (user?.id) {
-            // --- LÍNEA DE DEPURACIÓN AÑADIDA ---
-            console.log(`Cliente (ID: ${user.id}) intentando unirse a su sala.`);
             socket.emit('join_room', user.id);
         }
 
         socket.on('pedido_actualizado', (pedidoActualizado) => {
-            // --- LÍNEA DE DEPURACIÓN AÑADIDA ---
-            console.log("¡Notificación de pedido actualizado recibida por el cliente!", pedidoActualizado);
             if (pedidoActualizado.estado === 'Listo para entregar') {
-                toast.success(`¡Buenas noticias! Tu pedido está listo para recoger.`);
+                setNotification(`¡Buenas noticias! Tu pedido de ${pedidoActualizado.tamano} está listo para recoger.`);
             }
         });
 
@@ -98,6 +95,13 @@ export default function ClientePedido() {
 
     return (
         <div className="cliente-pedido-page">
+            {notification && (
+                <div className="notification-banner">
+                    <p>{notification}</p>
+                    <button onClick={() => setNotification(null)}>&times;</button>
+                </div>
+            )}
+            
             <header>
                 <img src="https://st2.depositphotos.com/1030956/5873/v/450/depositphotos_58731767-stock-illustration-red-illustrated-strawberry-vector-ecology.jpg" alt="Logo de SweetBerry" className="logo" />
                 <h1>Bienvenido, {user?.nombre}!</h1>

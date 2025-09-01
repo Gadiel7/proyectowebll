@@ -23,7 +23,6 @@ export function AppProvider({ children }) {
   const [usuarios, setUsuarios] = useState([]);
   const [productos, setProductos] = useState([]);
 
-  // Función de ayuda para recargar los datos del dashboard
   const fetchDashboardData = async () => {
     try {
       const data = await apiFetch('/stats/summary');
@@ -33,7 +32,6 @@ export function AppProvider({ children }) {
     }
   };
 
-  // Función de ayuda para recargar la lista de pedidos
   const fetchPedidos = async () => {
     try {
       const pedidosData = await apiFetch('/pedidos');
@@ -43,7 +41,6 @@ export function AppProvider({ children }) {
     }
   };
 
-  // Efecto para conectar y desconectar el socket
   useEffect(() => {
     if (isAuthenticated) {
       const newSocket = io(API_BASE_URL);
@@ -55,14 +52,12 @@ export function AppProvider({ children }) {
     }
   }, [isAuthenticated]);
 
-  // Efecto para unirse a salas y escuchar eventos
   useEffect(() => {
     if (socket && user) {
       if (user.rol === 'Administrador') {
         socket.emit('join_room', 'admins');
         socket.on('nuevo_pedido', (nuevoPedido) => {
           toast.success(`¡Nuevo pedido de ${nuevoPedido.nombreUsuario}!`);
-          // Recargamos la lista completa para asegurar la sincronización
           fetchPedidos(); 
           fetchDashboardData();
         });
@@ -73,7 +68,6 @@ export function AppProvider({ children }) {
     }
   }, [socket, user]);
 
-  // Efecto para verificar el token al cargar la app
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
@@ -81,31 +75,32 @@ export function AppProvider({ children }) {
         const decodedToken = jwtDecode(token);
         if (decodedToken.exp * 1000 < Date.now()) {
           localStorage.removeItem('token');
+          localStorage.removeItem('userName');
         } else {
           setIsAuthenticated(true);
           setUser(decodedToken.user);
         }
       } catch (error) {
         localStorage.removeItem('token');
+        localStorage.removeItem('userName');
       }
     }
     setIsInitialLoading(false);
   }, []);
 
-  // Efecto para cargar todos los datos iniciales
   useEffect(() => {
     if (isAuthenticated && user?.rol === 'Administrador') {
       const fetchAllData = async () => {
         setIsInitialLoading(true);
         try {
-          // Usamos las funciones de ayuda que ya creamos
-          await fetchDashboardData();
-          await fetchPedidos();
-          // Cargamos el resto de los datos
-          const [usuariosData, productosData] = await Promise.all([
+          const [summaryData, pedidosData, usuariosData, productosData] = await Promise.all([
+            apiFetch('/stats/summary'),
+            apiFetch('/pedidos'),
             apiFetch('/usuarios'),
             apiFetch('/productos'),
           ]);
+          setDashboardData(summaryData);
+          setPedidos(pedidosData);
           setUsuarios(usuariosData);
           setProductos(productosData);
         } catch (error) {
@@ -126,6 +121,7 @@ export function AppProvider({ children }) {
       });
       localStorage.setItem('token', data.token);
       const decodedToken = jwtDecode(data.token);
+      localStorage.setItem('userName', decodedToken.user.nombre);
       setIsAuthenticated(true);
       setUser(decodedToken.user);
       return true;
@@ -137,6 +133,7 @@ export function AppProvider({ children }) {
 
   const logout = () => {
     localStorage.removeItem('token');
+    localStorage.removeItem('userName');
     setIsAuthenticated(false);
     setUser(null);
     setDashboardData(null);
@@ -185,7 +182,7 @@ export function AppProvider({ children }) {
       });
       toast.success('¡Tu pedido ha sido enviado! Recibirás una notificación cuando esté listo.');
       if (user?.rol === 'Administrador') {
-        await fetchPedidos(); // Recargar pedidos si el admin crea uno
+        await fetchPedidos();
       }
       return true;
     } catch (error) {
