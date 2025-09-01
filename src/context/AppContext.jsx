@@ -1,15 +1,19 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import toast from 'react-hot-toast';
 import { jwtDecode } from 'jwt-decode';
+import io from 'socket.io-client';
 import apiFetch from '../utils/api';
 
 const AppContext = createContext();
+
+const API_BASE_URL = import.meta.env.VITE_API_URL.replace('/api', '');
 
 export function useAppContext() {
   return useContext(AppContext);
 }
 
 export function AppProvider({ children }) {
+  const [socket, setSocket] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState(null);
   const [isInitialLoading, setIsInitialLoading] = useState(true);
@@ -18,6 +22,36 @@ export function AppProvider({ children }) {
   const [pedidos, setPedidos] = useState([]);
   const [usuarios, setUsuarios] = useState([]);
   const [productos, setProductos] = useState([]);
+
+  // Efecto para conectar y desconectar el socket
+  useEffect(() => {
+    if (isAuthenticated) {
+      const newSocket = io(API_BASE_URL);
+      setSocket(newSocket);
+      return () => {
+        newSocket.disconnect();
+        setSocket(null);
+      };
+    }
+  }, [isAuthenticated]);
+
+  // Efecto para unirse a salas y escuchar eventos
+  useEffect(() => {
+    if (socket && user) {
+      if (user.rol === 'Administrador') {
+        socket.emit('join_room', 'admins');
+        socket.on('nuevo_pedido', (nuevoPedido) => {
+          toast.success(`¡Nuevo pedido de ${nuevoPedido.nombreUsuario}!`);
+          setPedidos(prevPedidos => [nuevoPedido, ...prevPedidos]);
+          fetchDashboardData();
+        });
+      }
+      // Limpieza de listeners
+      return () => {
+        socket.off('nuevo_pedido');
+      };
+    }
+  }, [socket, user]);
 
   const fetchDashboardData = async () => {
     try {
@@ -129,6 +163,27 @@ export function AppProvider({ children }) {
     }
   };
 
+  const createPedido = async (pedidoData) => {
+    setIsSubmitting(true);
+    try {
+      await apiFetch('/pedidos', {
+        method: 'POST',
+        body: JSON.stringify(pedidoData),
+      });
+      toast.success('¡Tu pedido ha sido enviado! Recibirás una notificación cuando esté listo.');
+      if (user?.rol === 'Administrador') {
+        const pedidosData = await apiFetch('/pedidos');
+        setPedidos(pedidosData);
+      }
+      return true;
+    } catch (error) {
+      toast.error(error.message || 'No se pudo enviar tu pedido.');
+      return false;
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   const saveUsuario = async (usuario) => {
     setIsSubmitting(true);
     try {
@@ -206,29 +261,6 @@ export function AppProvider({ children }) {
       await fetchDashboardData();
     } catch (error) {
       toast.error(error.message);
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  // --- FUNCIÓN NUEVA PARA CREAR PEDIDOS ---
-  const createPedido = async (pedidoData) => {
-    setIsSubmitting(true);
-    try {
-      await apiFetch('/pedidos', {
-        method: 'POST',
-        body: JSON.stringify(pedidoData),
-      });
-      toast.success('¡Tu pedido ha sido enviado! Recibirás una notificación cuando esté listo.');
-      // Opcional: recargar la lista de pedidos del admin si es necesario
-      if (user?.rol === 'Administrador') {
-        const pedidosData = await apiFetch('/pedidos');
-        setPedidos(pedidosData);
-      }
-      return true; // Indicar éxito
-    } catch (error) {
-      toast.error(error.message || 'No se pudo enviar tu pedido.');
-      return false; // Indicar fallo
     } finally {
       setIsSubmitting(false);
     }
