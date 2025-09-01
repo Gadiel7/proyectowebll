@@ -9,6 +9,10 @@ export default function PanelLayout() {
   const { user, isInitialLoading } = useAppContext();
   const [isSidebarOpen, setSidebarOpen] = useState(false);
 
+  // --- LÍNEA DE DEPURACIÓN AÑADIDA ---
+  // Esto se mostrará en la consola del navegador cuando entres al panel.
+  console.log("Datos del usuario en PanelLayout:", user);
+
   const toggleSidebar = () => {
     setSidebarOpen(!isSidebarOpen);
   };

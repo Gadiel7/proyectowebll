@@ -40,14 +40,21 @@ export default function ClientePedido() {
 
     useEffect(() => {
         const socket = io(API_BASE_URL);
+        
         if (user?.id) {
+            // --- LÍNEA DE DEPURACIÓN AÑADIDA ---
+            console.log(`Cliente (ID: ${user.id}) intentando unirse a su sala.`);
             socket.emit('join_room', user.id);
         }
+
         socket.on('pedido_actualizado', (pedidoActualizado) => {
+            // --- LÍNEA DE DEPURACIÓN AÑADIDA ---
+            console.log("¡Notificación de pedido actualizado recibida por el cliente!", pedidoActualizado);
             if (pedidoActualizado.estado === 'Listo para entregar') {
                 toast.success(`¡Buenas noticias! Tu pedido está listo para recoger.`);
             }
         });
+
         return () => {
             socket.disconnect();
         };
