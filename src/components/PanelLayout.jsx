@@ -32,7 +32,7 @@ export default function PanelLayout() {
     <div className="app">
       <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
       <div className="main-content">
-        <Header usuario={user?.name || 'Admin'} toggleSidebar={toggleSidebar} />
+        <Header usuario={user?.nombre || 'Admin'} toggleSidebar={toggleSidebar} />
         <section className="content-section">
           {isInitialLoading ? (
             <div className="loader-container">

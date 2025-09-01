@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useAppContext } from '../context/AppContext';
 import toast from 'react-hot-toast';
-// Importamos el CSS de forma normal.
+import io from 'socket.io-client';
 import './ClientePedido.css';
 
-// Datos de los productos
+const API_BASE_URL = import.meta.env.VITE_API_URL.replace('/api', '');
+
 const productosData = {
     tamanos: [
         { id: 'vaso-pequeno', nombre: 'Pequeño (12 oz)', valor: 'pequeno', precio: 10.00, imagen: '/images/vaso pequeño.png' },
@@ -36,6 +37,21 @@ export default function ClientePedido() {
     const [frutasSeleccionadas, setFrutasSeleccionadas] = useState([]);
     const [toppingsSeleccionados, setToppingsSeleccionados] = useState([]);
     const [precioTotal, setPrecioTotal] = useState(0.00);
+
+    useEffect(() => {
+        const socket = io(API_BASE_URL);
+        if (user?.id) {
+            socket.emit('join_room', user.id);
+        }
+        socket.on('pedido_actualizado', (pedidoActualizado) => {
+            if (pedidoActualizado.estado === 'Listo para entregar') {
+                toast.success(`¡Buenas noticias! Tu pedido está listo para recoger.`);
+            }
+        });
+        return () => {
+            socket.disconnect();
+        };
+    }, [user]);
 
     useEffect(() => {
         let total = 0;
