@@ -8,9 +8,9 @@ const API_BASE_URL = import.meta.env.VITE_API_URL.replace('/api', '');
 
 const productosData = {
     tamanos: [
-        { id: 'vaso-pequeno', nombre: 'Pequeño (12 oz)', valor: 'pequeno', precio: 10.00, imagen: '/images/vaso pequeño.png' },
-        { id: 'vaso-mediano', nombre: 'Mediano (16 oz)', valor: 'mediano', precio: 18.00, imagen: '/images/vaso mediano.png' },
-        { id: 'vaso-grande', nombre: 'Grande (20 oz)', valor: 'grande', precio: 25.00, imagen: '/images/vaso grande.png' }
+        { id: 'vaso-pequeno', nombre: 'Pequeño (12 oz)', valor: 'pequeno', precio: 10.00, imagen: '/images/foto1.jpg' },
+        { id: 'vaso-mediano', nombre: 'Mediano (16 oz)', valor: 'mediano', precio: 18.00, imagen: '/images/foto2.jpg' },
+        { id: 'vaso-grande', nombre: 'Grande (20 oz)', valor: 'grande', precio: 25.00, imagen: '/images/foto3.jpg' }
     ],
     cremas: [
         { nombre: 'Crema Batida Clásica', valor: 'crema-batida', precio: 0.00 },
