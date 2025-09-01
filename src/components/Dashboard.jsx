@@ -2,6 +2,8 @@ import { useAppContext } from "../context/AppContext";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, CartesianGrid } from 'recharts';
 import "./Dashboard.css";
 
+// Ya no necesitamos la variable de ejemplo 'salesData', la hemos eliminado.
+
 export default function Dashboard() {
   const { dashboardData, isInitialLoading } = useAppContext();
 
@@ -13,11 +15,12 @@ export default function Dashboard() {
     );
   }
   
+  // (La función formatCurrency no cambia)
   const formatCurrency = (value) => {
     return new Intl.NumberFormat('es-MX', {
       style: 'currency',
       currency: 'MXN',
-    }).format(value || 0); // Usar 0 si el valor es undefined
+    }).format(value || 0);
   };
 
   return (
@@ -46,8 +49,11 @@ export default function Dashboard() {
       <div className="dashboard-columns">
         <div className="chart-container">
           <h3>Top 5 Productos Más Pedidos</h3>
+          {/* Verificamos que existan datos antes de intentar renderizar el gráfico */}
           {dashboardData.topProductos && dashboardData.topProductos.length > 0 ? (
             <ResponsiveContainer width="100%" height={300}>
+              {/* --- CAMBIO IMPORTANTE AQUÍ --- */}
+              {/* Ahora el 'data' del gráfico viene de nuestro estado `dashboardData` */}
               <BarChart data={dashboardData.topProductos} layout="vertical" margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis type="number" allowDecimals={false} />
