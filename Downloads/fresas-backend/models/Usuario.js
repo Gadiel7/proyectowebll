@@ -1,4 +1,3 @@
-// models/Usuario.js
 const mongoose = require('mongoose');
 
 const usuarioSchema = new mongoose.Schema({
@@ -10,9 +9,9 @@ const usuarioSchema = new mongoose.Schema({
     type: String,
     required: true,
     unique: true,
-    lowercase: true // Siempre guardar el correo en minúsculas
+    lowercase: true
   },
-  password: { // <-- CAMPO NUEVO
+  password: {
     type: String,
     required: true
   },
@@ -20,6 +19,13 @@ const usuarioSchema = new mongoose.Schema({
     type: String,
     required: true,
     default: 'Cliente'
+  },
+  // --- CAMPOS NUEVOS PARA RECUPERAR CONTRASEÑA ---
+  resetPasswordToken: {
+    type: String
+  },
+  resetPasswordExpire: {
+    type: Date
   }
 });
 
