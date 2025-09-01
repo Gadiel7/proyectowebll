@@ -1,17 +1,65 @@
 const express = require('express');
 const router = express.Router();
-const crypto = require('crypto'); // Para generar el token
+const crypto = require('crypto');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const nodemailer = require('nodemailer');
 const Usuario = require('../models/Usuario');
 
-// ... (la ruta /register no cambia)
-router.post('/register', async (req, res) => { /* ...código sin cambios... */ });
+// --- RUTA DE REGISTRO ---
+// POST /api/auth/register
+router.post('/register', async (req, res) => {
+  try {
+    const { nombre, correo, password, rol } = req.body;
+    let usuario = await Usuario.findOne({ correo });
+    if (usuario) {
+      return res.status(400).json({ message: 'El correo ya está registrado.' });
+    }
+    usuario = new Usuario({ nombre, correo, password, rol });
+    const salt = await bcrypt.genSalt(10);
+    usuario.password = await bcrypt.hash(password, salt);
+    await usuario.save();
+    res.status(201).json({ message: 'Usuario registrado exitosamente.' });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Error en el servidor');
+  }
+});
 
-// ... (la ruta /login no cambia)
-router.post('/login', async (req, res) => { /* ...código sin cambios... */ });
-
+// --- RUTA DE LOGIN ---
+// POST /api/auth/login
+router.post('/login', async (req, res) => {
+  try {
+    const { correo, password } = req.body;
+    const usuario = await Usuario.findOne({ correo });
+    if (!usuario) {
+      return res.status(400).json({ message: 'Credenciales inválidas.' });
+    }
+    const isMatch = await bcrypt.compare(password, usuario.password);
+    if (!isMatch) {
+      return res.status(400).json({ message: 'Credenciales inválidas.' });
+    }
+    const payload = {
+      user: {
+        id: usuario.id,
+        nombre: usuario.nombre,
+        rol: usuario.rol
+      }
+    };
+    jwt.sign(
+      payload,
+      process.env.JWT_SECRET,
+      { expiresIn: '1h' },
+      (err, token) => {
+        if (err) throw err;
+        res.json({ token });
+      }
+    );
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Error en el servidor');
+  }
+});
 
 // --- RUTA PARA SOLICITAR RECUPERACIÓN DE CONTRASEÑA ---
 // POST /api/auth/forgot-password
@@ -21,21 +69,16 @@ router.post('/forgot-password', async (req, res) => {
         const usuario = await Usuario.findOne({ correo });
 
         if (!usuario) {
-            // Por seguridad, no revelamos si el correo existe o no
             return res.status(200).json({ message: 'Si el correo está registrado, se enviará un enlace de recuperación.' });
         }
 
-        // 1. Generar un token de reseteo seguro
         const resetToken = crypto.randomBytes(20).toString('hex');
         
-        // 2. Hashear el token y guardarlo en la DB
         usuario.resetPasswordToken = crypto.createHash('sha256').update(resetToken).digest('hex');
-        // El token expira en 10 minutos
         usuario.resetPasswordExpire = Date.now() + 10 * 60 * 1000; 
 
         await usuario.save();
 
-        // 3. Crear el enlace de reseteo (asegúrate de que esta URL apunte a tu frontend)
         const resetUrl = `https://proyectowebll.vercel.app/reset-password/${resetToken}`;
         const message = `
             <h1>Has solicitado un reseteo de contraseña</h1>
@@ -44,7 +87,6 @@ router.post('/forgot-password', async (req, res) => {
             <p>Este enlace expirará en 10 minutos.</p>
         `;
 
-        // 4. Configurar el transportador de correo con las variables de entorno
         const transporter = nodemailer.createTransport({
             host: process.env.SMTP_HOST,
             port: process.env.SMTP_PORT,
@@ -54,7 +96,6 @@ router.post('/forgot-password', async (req, res) => {
             }
         });
 
-        // 5. Enviar el correo
         await transporter.sendMail({
             from: `"Fresas con Crema" <${process.env.SMTP_USER}>`,
             to: usuario.correo,
@@ -66,7 +107,6 @@ router.post('/forgot-password', async (req, res) => {
 
     } catch (err) {
         console.error(err.message);
-        // Limpiar los campos del token si algo falla
         if (req.body.correo) {
             const usuario = await Usuario.findOne({ correo: req.body.correo });
             if (usuario) {
@@ -79,29 +119,24 @@ router.post('/forgot-password', async (req, res) => {
     }
 });
 
-
 // --- RUTA PARA RESETEAR LA CONTRASEÑA CON EL TOKEN ---
 // POST /api/auth/reset-password/:token
 router.post('/reset-password/:token', async (req, res) => {
     try {
-        // Hashear el token que viene en la URL para poder compararlo con el de la DB
         const resetPasswordToken = crypto.createHash('sha256').update(req.params.token).digest('hex');
 
-        // Buscar al usuario por el token y verificar que no haya expirado
         const usuario = await Usuario.findOne({
             resetPasswordToken,
-            resetPasswordExpire: { $gt: Date.now() } // $gt = "greater than" (mayor que)
+            resetPasswordExpire: { $gt: Date.now() }
         });
 
         if (!usuario) {
             return res.status(400).json({ message: 'El token es inválido o ha expirado.' });
         }
 
-        // Si el token es válido, establecer la nueva contraseña
         const salt = await bcrypt.genSalt(10);
         usuario.password = await bcrypt.hash(req.body.password, salt);
         
-        // Limpiar los campos del token de reseteo
         usuario.resetPasswordToken = undefined;
         usuario.resetPasswordExpire = undefined;
 
@@ -114,6 +149,5 @@ router.post('/reset-password/:token', async (req, res) => {
         res.status(500).send('Error en el servidor');
     }
 });
-
 
 module.exports = router;
