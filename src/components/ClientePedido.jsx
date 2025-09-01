@@ -2,9 +2,17 @@ import { useState, useEffect } from 'react';
 import { useAppContext } from '../context/AppContext';
 import toast from 'react-hot-toast';
 import io from 'socket.io-client';
+import Carousel from './Carousel.jsx'; // Importamos nuestro nuevo componente
 import './ClientePedido.css';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL.replace('/api', '');
+
+// Definimos las imágenes que pasaremos al carrusel
+const carouselImages = [
+    { src: '/images/carro1.jpg', alt: 'Promoción del mes' },
+    { src: '/images/carro2.jpg', alt: 'Nuevo Topping de temporada' },
+    { src: '/images/carro3.jpg', alt: 'Pide para tus eventos' }
+];
 
 const productosData = {
     tamanos: [
@@ -105,6 +113,8 @@ export default function ClientePedido() {
                 <p>¡Crea tu vaso de fresas con crema soñado!</p>
                 <button onClick={logout} className="btn btn-logout-cliente">Cerrar Sesión</button>
             </header>
+
+            <Carousel images={carouselImages} />
 
             <div className="main-content">
                 <main>
