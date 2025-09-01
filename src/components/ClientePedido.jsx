@@ -8,6 +8,7 @@ const API_BASE_URL = import.meta.env.VITE_API_URL.replace('/api', '');
 
 const productosData = {
     tamanos: [
+        // --- RUTAS DE IMAGEN CORREGIDAS ---
         { id: 'vaso-pequeno', nombre: 'Pequeño (12 oz)', valor: 'pequeno', precio: 10.00, imagen: '/images/foto1.jpg' },
         { id: 'vaso-mediano', nombre: 'Mediano (16 oz)', valor: 'mediano', precio: 18.00, imagen: '/images/foto2.jpg' },
         { id: 'vaso-grande', nombre: 'Grande (20 oz)', valor: 'grande', precio: 25.00, imagen: '/images/foto3.jpg' }
@@ -41,17 +42,14 @@ export default function ClientePedido() {
 
     useEffect(() => {
         const socket = io(API_BASE_URL);
-
         if (user?.id) {
             socket.emit('join_room', user.id);
         }
-
         socket.on('pedido_actualizado', (pedidoActualizado) => {
             if (pedidoActualizado.estado === 'Listo para entregar') {
                 setNotification(`¡Buenas noticias! Tu pedido de ${pedidoActualizado.tamano} está listo para recoger.`);
             }
         });
-
         return () => {
             socket.disconnect();
         };
@@ -165,11 +163,13 @@ export default function ClientePedido() {
                 <aside className="sidebar">
                     <div className="sidebar-ad-box">
                         <h4>¡Oferta Especial!</h4>
+                        {/* --- RUTA DE IMAGEN CORREGIDA --- */}
                         <img src="/images/post.png" alt="Publicidad de Batido de Fresa" />
                         <p>Prueba nuestro nuevo batido de fresa y vainilla. ¡Refrescante y delicioso!</p>
                         <a href="#" className="btn btn-sidebar">Ver más</a>
                     </div>
                     <div className="sidebar-photo-box">
+                        {/* --- RUTA DE IMAGEN CORREGIDA --- */}
                         <img src="/images/oferta.png" alt="Foto decorativa de fresas" />
                     </div>
                 </aside>
