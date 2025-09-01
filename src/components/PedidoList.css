@@ -86,3 +86,11 @@
   .pedido-card.listo {
     border-left: 6px solid #52c41a; /* Verde para listo */
   }
+/* ... (estilos existentes) ... */
+
+.pedido-items .precio-total {
+  margin-top: 10px;
+  font-size: 1.1em;
+  border-top: 1px solid #eee;
+  padding-top: 10px;
+}

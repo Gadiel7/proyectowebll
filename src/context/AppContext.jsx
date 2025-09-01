@@ -9,15 +9,12 @@ export function useAppContext() {
   return useContext(AppContext);
 }
 
-// La línea "const API_URL = ..." ha sido eliminada de aquí.
-
 export function AppProvider({ children }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState(null);
   const [isInitialLoading, setIsInitialLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [dashboardData, setDashboardData] = useState(null);
-
   const [pedidos, setPedidos] = useState([]);
   const [usuarios, setUsuarios] = useState([]);
   const [productos, setProductos] = useState([]);
@@ -214,6 +211,29 @@ export function AppProvider({ children }) {
     }
   };
 
+  // --- FUNCIÓN NUEVA PARA CREAR PEDIDOS ---
+  const createPedido = async (pedidoData) => {
+    setIsSubmitting(true);
+    try {
+      await apiFetch('/pedidos', {
+        method: 'POST',
+        body: JSON.stringify(pedidoData),
+      });
+      toast.success('¡Tu pedido ha sido enviado! Recibirás una notificación cuando esté listo.');
+      // Opcional: recargar la lista de pedidos del admin si es necesario
+      if (user?.rol === 'Administrador') {
+        const pedidosData = await apiFetch('/pedidos');
+        setPedidos(pedidosData);
+      }
+      return true; // Indicar éxito
+    } catch (error) {
+      toast.error(error.message || 'No se pudo enviar tu pedido.');
+      return false; // Indicar fallo
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   const value = {
     isAuthenticated,
     user,
@@ -223,6 +243,7 @@ export function AppProvider({ children }) {
     pedidos,
     updateStatusPedido,
     deletePedido,
+    createPedido,
     usuarios,
     saveUsuario,
     deleteUsuario,

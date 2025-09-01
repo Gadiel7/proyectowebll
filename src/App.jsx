@@ -1,15 +1,15 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import Login from "./components/Login.jsx";
 import Register from "./components/Register.jsx";
-import ForgotPassword from "./components/ForgotPassword.jsx"; // <-- IMPORTAR
-import ResetPassword from "./components/ResetPassword.jsx";   // <-- IMPORTAR
+import ForgotPassword from "./components/ForgotPassword.jsx";
+import ResetPassword from "./components/ResetPassword.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import PanelLayout from "./components/PanelLayout.jsx";
 import Dashboard from "./components/Dashboard.jsx";
 import PedidoList from "./components/PedidoList.jsx";
 import Usuarios from "./components/Usuarios.jsx";
 import Productos from "./components/Productos.jsx";
-import ClienteDashboard from "./components/ClienteDashboard.jsx";
+import ClientePedido from "./components/ClientePedido.jsx";
 import { useAppContext } from "./context/AppContext.jsx";
 
 function AppRoutes() {
@@ -32,19 +32,18 @@ function AppRoutes() {
   if (user?.rol === 'Cliente') {
     return (
       <Routes>
-        <Route path="/" element={<ClienteDashboard />} />
+        <Route path="/" element={<ClientePedido />} />
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     );
   }
 
-  // Si no hay usuario, puede acceder a las rutas públicas
   return (
     <Routes>
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
-      <Route path="/forgot-password" element={<ForgotPassword />} /> {/* <-- AÑADIR */}
-      <Route path="/reset-password/:token" element={<ResetPassword />} /> {/* <-- AÑADIR */}
+      <Route path="/forgot-password" element={<ForgotPassword />} />
+      <Route path="/reset-password/:token" element={<ResetPassword />} />
       <Route path="*" element={<Navigate to="/login" />} />
     </Routes>
   );
