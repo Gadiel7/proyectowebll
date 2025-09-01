@@ -3,8 +3,6 @@ import { useAppContext } from '../context/AppContext';
 import toast from 'react-hot-toast';
 import './ClientePedido.css';
 
-// Estos datos deberían venir de la base de datos en el futuro.
-// Por ahora, los definimos aquí.
 const productosData = {
     tamanos: [
         { id: 'vaso-pequeno', nombre: 'Pequeño (12 oz)', valor: 'pequeno', precio: 10.00, imagen: 'images/vaso pequeño.png' },
@@ -66,7 +64,6 @@ export default function ClientePedido() {
         
         const success = await createPedido(pedidoData);
         if (success) {
-            // Opcional: resetear el formulario después de un pedido exitoso
             setTamano(productosData.tamanos[0]);
             setCrema(productosData.cremas[0]);
             setFrutasSeleccionadas([]);
@@ -75,7 +72,7 @@ export default function ClientePedido() {
     };
 
     return (
-        <div className="container cliente-pedido">
+        <div className="container cliente-pedido-page"> {/* <-- CAMBIO AQUÍ */}
             <header>
                 <img src="https://st2.depositphotos.com/1030956/5873/v/450/depositphotos_58731767-stock-illustration-red-illustrated-strawberry-vector-ecology.jpg" alt="Logo de SweetBerry" className="logo" />
                 <h1>Bienvenido, {user?.nombre}!</h1>
@@ -137,7 +134,7 @@ export default function ClientePedido() {
                 </main>
 
                 <aside className="sidebar">
-                    {/* ... (el contenido del aside se puede mantener o eliminar) ... */}
+                    {/* ... (puedes mantener el aside o borrarlo) ... */}
                 </aside>
             </div>
 

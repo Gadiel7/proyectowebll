@@ -1,6 +1,5 @@
-// src/components/ResetPassword.jsx
 import { useState } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import apiFetch from '../utils/api';
 import './Login.css';
@@ -10,7 +9,7 @@ export default function ResetPassword() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState('');
-  const { token } = useParams(); // Obtenemos el token de la URL
+  const { token } = useParams();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -23,23 +22,16 @@ export default function ResetPassword() {
       toast.error('La contraseña debe tener al menos 6 caracteres.');
       return;
     }
-
     setIsLoading(true);
     setMessage('');
-
     try {
       const response = await apiFetch(`/auth/reset-password/${token}`, {
         method: 'POST',
         body: JSON.stringify({ password }),
       });
-
       toast.success('¡Contraseña actualizada!');
       setMessage(response.message + ' Serás redirigido al login.');
-      
-      setTimeout(() => {
-        navigate('/login');
-      }, 3000); // Redirigir al login después de 3 segundos
-
+      setTimeout(() => navigate('/login'), 3000);
     } catch (error) {
       toast.error(error.message);
     } finally {
@@ -48,34 +40,18 @@ export default function ResetPassword() {
   };
 
   return (
-    <div className="login-container">
+    <div className="auth-container"> {/* <-- CAMBIO AQUÍ */}
       <div className="login-form-wrapper">
         <form onSubmit={handleSubmit} className="login-form">
           <h2>Establecer Nueva Contraseña</h2>
           <p>Ingresa tu nueva contraseña a continuación.</p>
-          
           <div className="input-group">
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              placeholder="Nueva contraseña"
-            />
+            <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required placeholder="Nueva contraseña" />
           </div>
-
           <div className="input-group">
-            <input
-              type="password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              required
-              placeholder="Confirmar nueva contraseña"
-            />
+            <input type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required placeholder="Confirmar nueva contraseña" />
           </div>
-          
           {message && <p style={{ color: 'lightgreen', marginBottom: '15px' }}>{message}</p>}
-
           <button type="submit" className="login-button" disabled={isLoading}>
             {isLoading ? 'Actualizando...' : 'Actualizar Contraseña'}
           </button>

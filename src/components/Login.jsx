@@ -22,7 +22,7 @@ export default function Login() {
   };
 
   return (
-    <div className="login-container">
+    <div className="auth-container"> {/* <-- CAMBIO AQUÍ */}
       <div className="login-form-wrapper">
         <form onSubmit={handleSubmit} className="login-form">
           <h2>Panel de Administración</h2>
@@ -33,17 +33,13 @@ export default function Login() {
           <div className="input-group">
             <input type="password" id="password" value={password} onChange={(e) => setPassword(e.target.value)} required placeholder="Contraseña" />
           </div>
-
-          {/* --- ENLACE AÑADIDO --- */}
           <div className="forgot-password-link">
             <Link to="/forgot-password">¿Olvidaste tu contraseña?</Link>
           </div>
-          
           {error && !isLoading && <p className="error-message">{error}</p>}
           <button type="submit" className="login-button" disabled={isLoading}>
             {isLoading ? 'Ingresando...' : 'Ingresar'}
           </button>
-          
           <div className="register-link">
             <p>¿Eres cliente y no tienes cuenta? <Link to="/register">Regístrate</Link></p>
           </div>
