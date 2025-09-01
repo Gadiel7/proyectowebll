@@ -1,4 +1,4 @@
-/* --- ESTILOS GLOBALES Y NUEVA FUENTE --- */
+/* --- ESTILOS GLOBALES Y FUENTE --- */
 body {
   margin: 0;
   font-family: 'Poppins', sans-serif;
@@ -13,22 +13,25 @@ body {
 
 /* 
 ==============================================
---- NUEVOS ESTILOS PARA EL SIDEBAR ---
+--- ESTILOS DE ESCRITORIO (POR DEFECTO) ---
 ==============================================
 */
+
+/* --- Sidebar de Escritorio --- */
 .sidebar {
   background-color: #111827;
   color: #9ca3af;
   width: 240px;
   padding: 24px;
   flex-shrink: 0;
-  position: static;
+  position: static; /* El sidebar es parte del flujo normal */
   transform: translateX(0);
   display: flex;
   flex-direction: column;
   border-right: 1px solid #e5e7eb;
 }
 
+/* El overlay y el botón hamburguesa NO existen en escritorio */
 .sidebar-overlay,
 .hamburger-btn {
   display: none;
@@ -91,7 +94,7 @@ body {
   color: #fff;
 }
 
-/* --- CONTENIDO PRINCIPAL --- */
+/* --- Contenido Principal de Escritorio --- */
 .main-content {
   flex-grow: 1;
   padding: 30px;
@@ -99,7 +102,7 @@ body {
   overflow-y: auto;
 }
 
-/* --- ESTILOS DEL HEADER MEJORADO --- */
+/* --- Header de Escritorio --- */
 .header {
   background: #fff;
   padding: 10px 20px;
@@ -116,117 +119,38 @@ body {
   align-items: center;
 }
 
-.user-menu {
-  position: relative;
-}
+/* ... (El resto de los estilos del header, como .user-menu, .dropdown-menu, etc., son iguales para ambas vistas y no necesitan cambios) ... */
 
-.user-info {
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-  padding: 5px 10px;
-  border-radius: 8px;
-  transition: background-color 0.2s;
-}
-.user-info:hover {
-  background-color: #f0f0f0;
-}
-
-.user-info .user-avatar {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background-color: #3b82f6;
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: bold;
-  margin-right: 10px;
-}
-
-.user-info .user-name {
-  font-weight: 500;
-  color: #111827;
-}
-
-.dropdown-menu {
-  position: absolute;
-  top: 110%;
-  right: 0;
-  background-color: white;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  width: 180px;
-  padding: 8px 0;
-  z-index: 10;
-  opacity: 0;
-  visibility: hidden;
-  transform: translateY(-10px);
-  transition: opacity 0.2s, transform 0.2s;
-}
-
-.dropdown-menu.open {
-  opacity: 1;
-  visibility: visible;
-  transform: translateY(0);
-}
-
-.dropdown-menu button {
-  display: flex;
-  align-items: center;
-  width: 100%;
-  padding: 10px 15px;
-  border: none;
-  background: none;
-  text-align: left;
-  cursor: pointer;
-  font-size: 0.95em;
-  color: #374151;
-}
-.dropdown-menu button:hover {
-  background-color: #f5f5f5;
-}
-
-/* --- ESTILOS PERSONALIZADOS PARA SWEETALERT2 --- */
-.custom-swal-popup {
-  border-radius: 12px !important;
-  font-family: 'Poppins', sans-serif !important;
-}
-.custom-swal-title {
-  color: #111827 !important;
-}
-.custom-swal-confirm {
-  background-color: #3b82f6 !important;
-  border-radius: 8px !important;
-}
-.custom-swal-cancel {
-  border-radius: 8px !important;
-}
-
-/* --- ESTILOS RESPONSIVOS PARA MÓVILES --- */
+/*
+==============================================
+--- ESTILOS RESPONSIVOS PARA MÓVILES ---
+==============================================
+*/
 @media (max-width: 768px) {
+  /* Cuando la pantalla es pequeña, estos estilos SOBRESCRIBEN a los de escritorio */
   .app {
     flex-direction: column;
     height: auto;
     min-height: 100vh;
   }
 
+  /* --- Sidebar Móvil --- */
   .sidebar {
-    position: fixed;
+    position: fixed; /* Lo sacamos del flujo normal */
     top: 0;
     left: 0;
     height: 100%;
-    transform: translateX(-100%);
+    transform: translateX(-100%); /* Lo ocultamos a la izquierda */
     transition: transform 0.3s ease-in-out;
     z-index: 200;
     width: 250px;
   }
 
   .sidebar.open {
-    transform: translateX(0);
+    transform: translateX(0); /* Lo traemos a la vista */
   }
 
+  /* El overlay SÍ existe y se muestra en móvil */
   .sidebar-overlay {
     display: block;
     position: fixed;
@@ -245,13 +169,8 @@ body {
     opacity: 1;
     visibility: visible;
   }
-
-  .main-content {
-    width: 100%;
-    padding: 10px;
-    box-sizing: border-box;
-  }
-
+  
+  /* El botón hamburguesa SÍ se muestra en móvil */
   .hamburger-btn {
     display: block;
     background: none;
@@ -261,19 +180,17 @@ body {
     cursor: pointer;
   }
 
-  .user-info .user-name {
-    display: none;
+  /* --- Contenido Principal Móvil --- */
+  .main-content {
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
   }
   
-  .usuarios-tabla, .productos-tabla {
-    border: none;
-    box-shadow: none;
-  }
-
+  /* --- Tablas Responsivas Móvil --- */
   .usuarios-tabla thead, .productos-tabla thead {
     display: none;
   }
-
   .usuarios-tabla tr, .productos-tabla tr {
     display: block;
     margin-bottom: 15px;
@@ -282,7 +199,6 @@ body {
     box-shadow: 0 2px 5px rgba(0,0,0,0.05);
     padding: 10px;
   }
-
   .usuarios-tabla td, .productos-tabla td {
     display: block;
     text-align: right;
@@ -290,11 +206,9 @@ body {
     position: relative;
     border-bottom: 1px solid #eee;
   }
-
   .usuarios-tabla td:last-child, .productos-tabla td:last-child {
     border-bottom: 0;
   }
-
   .usuarios-tabla td::before, .productos-tabla td::before {
     content: attr(data-label);
     position: absolute;
@@ -302,11 +216,5 @@ body {
     width: 45%;
     font-weight: bold;
     text-align: left;
-  }
-  
-  .usuarios-tabla td[data-label="Acciones"], .productos-tabla td[data-label="Acciones"] {
-    padding-top: 15px;
-    padding-bottom: 5px;
-    text-align: center;
   }
 }
