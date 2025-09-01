@@ -23,6 +23,26 @@ export function AppProvider({ children }) {
   const [usuarios, setUsuarios] = useState([]);
   const [productos, setProductos] = useState([]);
 
+  // Función de ayuda para recargar los datos del dashboard
+  const fetchDashboardData = async () => {
+    try {
+      const data = await apiFetch('/stats/summary');
+      setDashboardData(data);
+    } catch (error) {
+      console.error("Error recargando los datos del dashboard:", error);
+    }
+  };
+
+  // Función de ayuda para recargar la lista de pedidos
+  const fetchPedidos = async () => {
+    try {
+      const pedidosData = await apiFetch('/pedidos');
+      setPedidos(pedidosData);
+    } catch (error) {
+      toast.error("No se pudo actualizar la lista de pedidos.");
+    }
+  };
+
   // Efecto para conectar y desconectar el socket
   useEffect(() => {
     if (isAuthenticated) {
@@ -42,26 +62,18 @@ export function AppProvider({ children }) {
         socket.emit('join_room', 'admins');
         socket.on('nuevo_pedido', (nuevoPedido) => {
           toast.success(`¡Nuevo pedido de ${nuevoPedido.nombreUsuario}!`);
-          setPedidos(prevPedidos => [nuevoPedido, ...prevPedidos]);
+          // Recargamos la lista completa para asegurar la sincronización
+          fetchPedidos(); 
           fetchDashboardData();
         });
       }
-      // Limpieza de listeners
       return () => {
         socket.off('nuevo_pedido');
       };
     }
   }, [socket, user]);
 
-  const fetchDashboardData = async () => {
-    try {
-      const data = await apiFetch('/stats/summary');
-      setDashboardData(data);
-    } catch (error) {
-      console.error("Error recargando los datos del dashboard:", error);
-    }
-  };
-
+  // Efecto para verificar el token al cargar la app
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
@@ -80,19 +92,20 @@ export function AppProvider({ children }) {
     setIsInitialLoading(false);
   }, []);
 
+  // Efecto para cargar todos los datos iniciales
   useEffect(() => {
     if (isAuthenticated && user?.rol === 'Administrador') {
       const fetchAllData = async () => {
         setIsInitialLoading(true);
         try {
-          const [summaryData, pedidosData, usuariosData, productosData] = await Promise.all([
-            apiFetch('/stats/summary'),
-            apiFetch('/pedidos'),
+          // Usamos las funciones de ayuda que ya creamos
+          await fetchDashboardData();
+          await fetchPedidos();
+          // Cargamos el resto de los datos
+          const [usuariosData, productosData] = await Promise.all([
             apiFetch('/usuarios'),
             apiFetch('/productos'),
           ]);
-          setDashboardData(summaryData);
-          setPedidos(pedidosData);
           setUsuarios(usuariosData);
           setProductos(productosData);
         } catch (error) {
@@ -172,8 +185,7 @@ export function AppProvider({ children }) {
       });
       toast.success('¡Tu pedido ha sido enviado! Recibirás una notificación cuando esté listo.');
       if (user?.rol === 'Administrador') {
-        const pedidosData = await apiFetch('/pedidos');
-        setPedidos(pedidosData);
+        await fetchPedidos(); // Recargar pedidos si el admin crea uno
       }
       return true;
     } catch (error) {
