@@ -220,3 +220,39 @@
     justify-content: center;
   }
 }
+/* --- ESTILOS PARA EL BANNER DE NOTIFICACIÓN --- */
+.notification-banner {
+  background: linear-gradient(45deg, #4caf50, #81c784);
+  color: white;
+  padding: 15px 20px;
+  text-align: center;
+  position: sticky;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1001;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  box-sizing: border-box;
+}
+
+.notification-banner p {
+  margin: 0;
+  font-weight: 500;
+}
+
+.notification-banner button {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.5rem;
+  cursor: pointer;
+  opacity: 0.8;
+  transition: opacity 0.2s;
+}
+
+.notification-banner button:hover {
+  opacity: 1;
+}
