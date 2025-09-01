@@ -283,3 +283,19 @@
   border-radius: 10px;
   display: block;
 }
+/* ... (estilos existentes) ... */
+
+/* --- Estilos para el Contenedor del Botón de Menú --- */
+.cliente-pedido-page .menu-button-container {
+    text-align: center;
+    padding: 20px 0;
+    border-top: 2px dashed #FFD1DC;
+    border-bottom: 2px dashed #FFD1DC;
+    margin: 25px 0;
+}
+
+.cliente-pedido-page .btn-menu {
+  background: linear-gradient(45deg, #FF6B81, #D42848);
+}
+
+/* ... (estilos existentes) ... */
