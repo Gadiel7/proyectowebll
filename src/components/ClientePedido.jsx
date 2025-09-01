@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useAppContext } from '../context/AppContext';
 import toast from 'react-hot-toast';
-// Importamos el CSS como un módulo, lo que aísla sus estilos
-import styles from './ClientePedido.module.css';
+// Importamos el CSS de forma normal.
+import './ClientePedido.css';
 
 // Datos de los productos
 const productosData = {
@@ -57,7 +57,7 @@ export default function ClientePedido() {
 
     const handleRealizarPedido = async () => {
         const pedidoData = {
-            tamano: tamano.nombre, // Enviamos el nombre legible
+            tamano: tamano.nombre,
             crema: crema.nombre,
             frutas: frutasSeleccionadas.map(f => f.nombre),
             toppings: toppingsSeleccionados.map(t => t.nombre),
@@ -66,7 +66,6 @@ export default function ClientePedido() {
         
         const success = await createPedido(pedidoData);
         if (success) {
-            // Reseteamos el formulario al estado inicial
             setTamano(productosData.tamanos[0]);
             setCrema(productosData.cremas[0]);
             setFrutasSeleccionadas([]);
@@ -75,61 +74,60 @@ export default function ClientePedido() {
     };
 
     return (
-        <div className={styles.container}>
+        <div className="cliente-pedido-page">
             <header>
-                <img src="https://st2.depositphotos.com/1030956/5873/v/450/depositphotos_58731767-stock-illustration-red-illustrated-strawberry-vector-ecology.jpg" alt="Logo de SweetBerry" className={styles.logo} />
+                <img src="https://st2.depositphotos.com/1030956/5873/v/450/depositphotos_58731767-stock-illustration-red-illustrated-strawberry-vector-ecology.jpg" alt="Logo de SweetBerry" className="logo" />
                 <h1>Bienvenido, {user?.nombre}!</h1>
                 <p>¡Crea tu vaso de fresas con crema soñado!</p>
-                {/* Botón de Logout añadido para el cliente */}
-                <button onClick={logout} className={`${styles.btn} ${styles['btn-logout-cliente']}`}>Cerrar Sesión</button>
+                <button onClick={logout} className="btn btn-logout-cliente">Cerrar Sesión</button>
             </header>
 
-            <div className={styles['main-content']}>
+            <div className="main-content">
                 <main>
                     <form id="order-form">
-                        <div className={styles['form-section']}>
+                        <div className="form-section">
                             <h3>1. Elige el Tamaño</h3>
-                            <div className={styles['opciones-grid']}>
+                            <div className="opciones-grid">
                                 {productosData.tamanos.map(item => (
-                                    <label htmlFor={item.id} className={styles['opcion-item']} key={item.id}>
+                                    <label htmlFor={item.id} className="opcion-item" key={item.id}>
                                         <input type="radio" id={item.id} name="tamano-vaso" value={item.valor} checked={tamano.valor === item.valor} onChange={() => setTamano(item)} />
                                         <span>{item.nombre}</span>
-                                        <div className={styles['img-container']}><img src={item.imagen} alt={item.nombre} /></div>
+                                        <div className="img-container"><img src={item.imagen} alt={item.nombre} /></div>
                                     </label>
                                 ))}
                             </div>
                         </div>
 
-                        <div className={styles['form-section']}>
+                        <div className="form-section">
                             <h3>2. Escoge tu Crema</h3>
-                            <select id="tipo-crema" name="tipo-crema" className={styles['form-control']} value={crema.valor} onChange={(e) => setCrema(productosData.cremas.find(c => c.valor === e.target.value))}>
+                            <select id="tipo-crema" name="tipo-crema" className="form-control" value={crema.valor} onChange={(e) => setCrema(productosData.cremas.find(c => c.valor === e.target.value))}>
                                 {productosData.cremas.map(item => (
                                     <option key={item.valor} value={item.valor} data-price={item.precio}>{item.nombre}</option>
                                 ))}
                             </select>
                         </div>
 
-                        <div className={styles['form-section']}>
+                        <div className="form-section">
                             <h3>3. Agrega Frutas Frescas</h3>
-                            <div className={styles['opciones-grid']}>
+                            <div className="opciones-grid">
                                 {productosData.frutas.map(item => (
-                                    <label htmlFor={item.id} className={styles['opcion-item']} key={item.id}>
+                                    <label htmlFor={item.id} className="opcion-item" key={item.id}>
                                         <input type="checkbox" id={item.id} name="fruta" value={item.valor} checked={frutasSeleccionadas.some(f => f.valor === item.valor)} onChange={() => handleCheckboxChange(item, frutasSeleccionadas, setFrutasSeleccionadas)} />
                                         <span>{item.nombre}</span>
-                                        <div className={styles['img-container']}><img src={item.imagen} alt={item.nombre} /></div>
+                                        <div className="img-container"><img src={item.imagen} alt={item.nombre} /></div>
                                     </label>
                                 ))}
                             </div>
                         </div>
 
-                        <div className={styles['form-section']}>
+                        <div className="form-section">
                             <h3>4. El Toque Final: ¡Toppings!</h3>
-                            <div className={styles['opciones-grid']}>
+                            <div className="opciones-grid">
                                 {productosData.toppings.map(item => (
-                                    <label htmlFor={item.id} className={styles['opcion-item']} key={item.id}>
+                                    <label htmlFor={item.id} className="opcion-item" key={item.id}>
                                         <input type="checkbox" id={item.id} name="topping" value={item.valor} checked={toppingsSeleccionados.some(t => t.valor === item.valor)} onChange={() => handleCheckboxChange(item, toppingsSeleccionados, setToppingsSeleccionados)} />
                                         <span>{item.nombre}</span>
-                                        <div className={styles['img-container']}><img src={item.imagen} alt={item.nombre} /></div>
+                                        <div className="img-container"><img src={item.imagen} alt={item.nombre} /></div>
                                     </label>
                                 ))}
                             </div>
@@ -137,23 +135,23 @@ export default function ClientePedido() {
                     </form>
                 </main>
 
-                <aside className={styles.sidebar}>
-                    <div className={styles['sidebar-ad-box']}>
+                <aside className="sidebar">
+                    <div className="sidebar-ad-box">
                         <h4>¡Oferta Especial!</h4>
                         <img src="/images/post.png" alt="Publicidad de Batido de Fresa" />
                         <p>Prueba nuestro nuevo batido de fresa y vainilla. ¡Refrescante y delicioso!</p>
-                        <a href="#" className={`${styles.btn} ${styles['btn-sidebar']}`}>Ver más</a>
+                        <a href="#" className="btn btn-sidebar">Ver más</a>
                     </div>
-                    <div className={styles['sidebar-photo-box']}>
+                    <div className="sidebar-photo-box">
                         <img src="/images/oferta.png" alt="Foto decorativa de fresas" />
                     </div>
                 </aside>
             </div>
 
-            <div className={styles['footer-actions']}>
-                <div className={styles['total-price-container']}>Total: <span id="total-price">Bs <span id="price-value">{precioTotal.toFixed(2)}</span></span></div>
-                <div className={styles.action-buttons}>
-                    <button id="realizar-pedido-btn" className={`${styles.btn} ${styles['btn-pedido']}`} onClick={handleRealizarPedido} disabled={isSubmitting}>
+            <div className="footer-actions">
+                <div className="total-price-container">Total: <span>Bs <span>{precioTotal.toFixed(2)}</span></span></div>
+                <div className="action-buttons">
+                    <button id="realizar-pedido-btn" className="btn btn-pedido" onClick={handleRealizarPedido} disabled={isSubmitting}>
                         {isSubmitting ? 'Enviando Pedido...' : 'Realizar Pedido'}
                     </button>
                 </div>
