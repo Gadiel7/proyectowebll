@@ -3,6 +3,7 @@ import { useAppContext } from '../context/AppContext';
 import toast from 'react-hot-toast';
 import io from 'socket.io-client';
 import Carousel from './Carousel.jsx';
+import ModalPago from './ModalPago.jsx';
 import './ClientePedido.css';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL.replace('/api', '');
@@ -45,6 +46,8 @@ export default function ClientePedido() {
     const [toppingsSeleccionados, setToppingsSeleccionados] = useState([]);
     const [precioTotal, setPrecioTotal] = useState(0.00);
     const [notification, setNotification] = useState(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [whatsappLink, setWhatsappLink] = useState('');
 
     useEffect(() => {
         const socket = io(API_BASE_URL);
@@ -80,6 +83,25 @@ export default function ClientePedido() {
     };
 
     const handleRealizarPedido = async () => {
+        const pedidoSummary = [
+            `Hola! Adjunto mi comprobante de pago para el siguiente pedido de SweetBerry:`,
+            ``,
+            `*Tamaño:* ${tamano.nombre}`,
+            `*Crema:* ${crema.nombre}`,
+        ];
+        if (frutasSeleccionadas.length > 0) {
+            pedidoSummary.push(`*Frutas:* ${frutasSeleccionadas.map(f => f.nombre).join(', ')}`);
+        }
+        if (toppingsSeleccionados.length > 0) {
+            pedidoSummary.push(`*Toppings:* ${toppingsSeleccionados.map(t => t.nombre).join(', ')}`);
+        }
+        pedidoSummary.push(``);
+        pedidoSummary.push(`*TOTAL PAGADO: Bs ${precioTotal.toFixed(2)}*`);
+
+        const message = encodeURIComponent(pedidoSummary.join('\n'));
+        const phoneNumber = '73458886';
+        setWhatsappLink(`https://api.whatsapp.com/send/?phone=${phoneNumber}&text=${message}`);
+
         const pedidoData = {
             tamano: tamano.nombre,
             crema: crema.nombre,
@@ -90,10 +112,7 @@ export default function ClientePedido() {
         
         const success = await createPedido(pedidoData);
         if (success) {
-            setTamano(productosData.tamanos[0]);
-            setCrema(productosData.cremas[0]);
-            setFrutasSeleccionadas([]);
-            setToppingsSeleccionados([]);
+            setIsModalOpen(true); // Abrir el modal solo si el pedido se guardó
         }
     };
 
@@ -197,10 +216,16 @@ export default function ClientePedido() {
                 <div className="total-price-container">Total: <span>Bs <span>{precioTotal.toFixed(2)}</span></span></div>
                 <div className="action-buttons">
                     <button id="realizar-pedido-btn" className="btn btn-pedido" onClick={handleRealizarPedido} disabled={isSubmitting}>
-                        {isSubmitting ? 'Enviando Pedido...' : 'Realizar Pedido'}
+                        {isSubmitting ? 'Procesando Pedido...' : 'Realizar Pedido'}
                     </button>
                 </div>
             </div>
+
+            <ModalPago 
+                isOpen={isModalOpen} 
+                onClose={() => setIsModalOpen(false)} 
+                whatsappLink={whatsappLink} 
+            />
         </div>
     );
 }
