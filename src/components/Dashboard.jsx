@@ -13,6 +13,13 @@ export default function Dashboard() {
     );
   }
   
+  const formatCurrency = (value) => {
+    return new Intl.NumberFormat('es-MX', {
+      style: 'currency',
+      currency: 'MXN',
+    }).format(value || 0); // Usar 0 si el valor es undefined
+  };
+
   return (
     <div className="dashboard-container">
       <h2>Resumen de Estadísticas</h2>
@@ -20,34 +27,34 @@ export default function Dashboard() {
       <div className="stats-grid">
         <div className="stat-card">
           <h3>Pedidos Pendientes</h3>
-          <p>{dashboardData.pedidosPendientes}</p>
+          <p>{dashboardData.pedidosPendientes || 0}</p>
         </div>
         <div className="stat-card">
           <h3>Total Pedidos</h3>
-          <p>{dashboardData.totalPedidos}</p>
+          <p>{dashboardData.totalPedidos || 0}</p>
         </div>
         <div className="stat-card">
           <h3>Clientes Registrados</h3>
-          <p>{dashboardData.totalUsuarios}</p>
+          <p>{dashboardData.totalUsuarios || 0}</p>
         </div>
         <div className="stat-card">
           <h3>Productos Activos</h3>
-          <p>{dashboardData.totalProductos}</p>
+          <p>{dashboardData.totalProductos || 0}</p>
         </div>
       </div>
 
       <div className="dashboard-columns">
         <div className="chart-container">
           <h3>Top 5 Productos Más Pedidos</h3>
-          {dashboardData.topProductos.length > 0 ? (
+          {dashboardData.topProductos && dashboardData.topProductos.length > 0 ? (
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={dashboardData.topProductos} layout="vertical" margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis type="number" />
+                <XAxis type="number" allowDecimals={false} />
                 <YAxis dataKey="name" type="category" width={100} />
                 <Tooltip cursor={{fill: '#f5f5f5'}} formatter={(value) => `${value} unidades`} />
                 <Legend />
-                <Bar dataKey="total" name="Unidades Vendidas" fill="#3b82f6" /> {/* <-- COLOR ACTUALIZADO */}
+                <Bar dataKey="total" name="Unidades Vendidas" fill="#3b82f6" />
               </BarChart>
             </ResponsiveContainer>
           ) : (
@@ -57,12 +64,14 @@ export default function Dashboard() {
 
         <div className="recent-orders-container">
           <h3>Pedidos Recientes</h3>
-          {dashboardData.pedidosRecientes.length > 0 ? (
+          {dashboardData.pedidosRecientes && dashboardData.pedidosRecientes.length > 0 ? (
             <ul className="recent-orders-list">
               {dashboardData.pedidosRecientes.map(pedido => (
                 <li key={pedido._id}>
-                  <span>{pedido.usuario}</span>
-                  <span className={`estado ${pedido.estado.toLowerCase().replace(/\s/g, '-')}`}>{pedido.estado}</span>
+                  <span>{pedido.nombreUsuario || 'Usuario Desconocido'}</span>
+                  <span className={`estado ${pedido.estado?.toLowerCase().replace(/\s/g, '-') || 'pendiente'}`}>
+                    {pedido.estado || 'Pendiente'}
+                  </span>
                 </li>
               ))}
             </ul>
